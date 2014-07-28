@@ -3,6 +3,11 @@
 #
 # v1.0                                                                H.K. July 2014
 #
+# To use:
+#    package require modulefunctions 1.0
+# and then
+#    modulefunctions::createSymlink $from $to
+#
 
 package provide modulefunctions 1.0
 package require Tcl             8.4
