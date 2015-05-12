@@ -96,3 +96,10 @@ proc ::modulefunctions::isModuleLoad { } {
     
     return [ module-info mode load ]
 }
+
+# Check if TMPDIR exists
+proc ::modulefunctions::isTMPDIR { } {
+
+    return [ info exists ::env(TMPDIR) ]
+}
+
