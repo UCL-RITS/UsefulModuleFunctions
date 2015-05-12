@@ -48,3 +48,11 @@ Check if the user is loading the module. Otherwise the function will be carried 
     if [modulefunctions::isModuleLoad] {
         # do stuff
     }
+
+ * `isTMPDIR`
+
+Check if $TMPDIR exists.
+
+    if [modulefunctions::isTMPDIR] {
+         # do stuff
+    }
