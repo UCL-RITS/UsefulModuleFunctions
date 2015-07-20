@@ -17,10 +17,10 @@ Functions contained and usage
 
 * `createSymlink` 
 
-Create a symlink, printing out an error if it fails to be created.
+Create a symlink, printing out an error if it fails to be created. Checks whether it already exists first and uses the existing one if it does.
 Example usage:
 
-    modulefunctions::createSymlink $from $to
+    modulefunctions::createSymlink $newlink $sourcefile
 
 * `createDir` 
     
@@ -33,7 +33,7 @@ Example usage:
     
 Copies the source file or directory to user space. Informs the user of what is being created. Informs the user if the copy fails and outputs a reminder that the module must be loaded at least once from a login node. If the file or directory exists, tells the user it is using the existing one.
 
-    modulefunctions::copySource $from $to
+    modulefunctions::copySource $sourcefile $copytarget
     
 * `isMember` 
     
