@@ -10,7 +10,7 @@ To use:
 
 and then
 
-    modulefunctions::createSymlink $from $to
+    modulefunctions::createSymlink $newlink $sourcefile
     
 Functions contained and usage
 -----------------------------
