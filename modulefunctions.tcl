@@ -17,14 +17,23 @@ namespace eval ::modulefunctions {
 }
 
 # Create a symlink in user space
-proc ::modulefunctions::createSymlink { from to } {
+proc ::modulefunctions::createSymlink { newlink sourcefile } {
 
-    if { [catch {file link $from $to} err] } {
-        puts stderr "Cannot link from $from to $to:"
-        puts stderr "    $err"
-        return false
+    if { ![file exists $newlink] } { # symlink doesn't exist at destination
+        puts stderr ""
+        puts stderr "$newlink doesn't exist - creating"  
+        puts stderr ""
+        if { [catch {file link $newlink $sourcefile} err] } {
+            puts stderr "Cannot link from $newlink to $sourcefile:"
+            puts stderr "    $err"
+            puts stderr "Note: you must load this module at least once from a login node."
+            return false
+        }
+        return true
+    } else { # symlink exists already
+        puts stderr "Using existing $newlink"
+        return true
     }
-    return true
 }
 
 # Create a directory in user space. mkdir creates any missing
@@ -46,21 +55,21 @@ proc ::modulefunctions::createDir { path } {
 
 # Copies source (file or dir) to user space. Reminds that module must be 
 # loaded at least once from a login node if copy fails.
-proc ::modulefunctions::copySource { from to } {
+proc ::modulefunctions::copySource { sourcefile copytarget } {
 
-    if { ![file exists $to] } { # source doesn't exist at destination
+    if { ![file exists $copytarget] } { # copytarget doesn't exist at destination
         puts stderr ""
-        puts stderr "$to doesn't exist - creating"
+        puts stderr "$copytarget doesn't exist - creating"
         puts stderr ""
-        if { [catch {file copy $from $to} err] } {
-            puts stderr "failed to copy $from to $to:"
+        if { [catch {file copy $sourcefile $copytarget} err] } {
+            puts stderr "failed to copy $sourcefile to $copytarget:"
             puts stderr "    $err"
             puts stderr "Note: you must load this module at least once from a login node."
             return false
         }
         return true
     } else { # source exists at destination already
-        puts stderr "Using existing $to"
+        puts stderr "Using existing $copytarget"
         return true
     }
 }
