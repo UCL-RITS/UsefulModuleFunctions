@@ -120,7 +120,7 @@ proc ::modulefunctions::getCluster { } {
 # Returns true (1) if identical, false (0) if not.
 proc ::modulefunctions::isCluster { name } {
   set cluster [::modulefunctions::getCluster]
-  return [string equals -nocase $cluster $name]
+  return [string equal -nocase $cluster $name]
 }
 
 # Check if user is loading module - only want to use many of the above
