@@ -13,7 +13,7 @@ package provide modulefunctions 1.0
 package require Tcl             8.4
 
 namespace eval ::modulefunctions {
-    namespace export createSymlink createDir copySource isMember isModuleLoad getCluster isCluster
+    namespace export createSymlink createDir copySource isMember getCluster isCluster isModuleLoad isTMPDIR
 }
 
 # Create a symlink in user space
