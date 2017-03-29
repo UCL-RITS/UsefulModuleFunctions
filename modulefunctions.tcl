@@ -13,7 +13,7 @@ package provide modulefunctions 1.0
 package require Tcl             8.4
 
 namespace eval ::modulefunctions {
-    namespace export createSymlink createDir copySource isMember isModuleLoad
+    namespace export createSymlink createDir copySource isMember isModuleLoad getCluster isCluster
 }
 
 # Create a symlink in user space
@@ -97,6 +97,30 @@ proc ::modulefunctions::isMember { group } {
         puts stderr ""
         return false
     }
+}
+
+# Return which cluster this is.
+proc ::modulefunctions::getCluster { } {
+    set hostname [exec hostname -f]
+    if { [string match *legion* $hostname] } {
+        set name "legion"
+    } elseif { [string match *grace* $hostname] } {
+        set name "grace"
+    } elseif { [string match *thomas* $hostname] } {
+        set name "thomas"
+    } elseif { [string match *aristotle* $hostname] } {
+        set name "aristotle"
+    } else {
+        set name "unknown"
+    }
+    return $name
+}
+
+# Check if this is a specific cluster (not case-sensitive).
+# Returns true (1) if identical, false (0) if not.
+proc ::modulefunctions::isCluster { name } {
+  set cluster [::modulefunctions::getCluster]
+  return [string equals -nocase $cluster $name]
 }
 
 # Check if user is loading module - only want to use many of the above

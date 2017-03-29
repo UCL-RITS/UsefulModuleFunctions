@@ -41,6 +41,20 @@ Check if the user is a member of the specified group. Gives an error if the grou
 
     modulefunctions::isMember $group
 
+* `getCluster`
+
+Get the name of the current cluster, assuming it is one we know about.
+
+    modulefunctions::getCluster
+
+* `isCluster`
+
+Check if the name of the current cluster matches the given string. Not case sensitive.
+
+    if [modulefunctions::isCluster $name] {
+        # do stuff
+    }
+
 * `isModuleLoad` 
     
 Check if the user is loading the module. Otherwise the function will be carried out on module unload as well.
