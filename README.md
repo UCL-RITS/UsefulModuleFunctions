@@ -70,3 +70,12 @@ Check if $TMPDIR exists.
     if [modulefunctions::isTMPDIR] {
          # do stuff
     }
+
+ * `isJob`
+
+Check if this is a job (whether $NHOSTS exists)
+
+    if [modulefunctions::isJob] {
+        # do stuff
+    }
+

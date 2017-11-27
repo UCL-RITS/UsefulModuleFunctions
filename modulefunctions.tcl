@@ -75,27 +75,30 @@ proc ::modulefunctions::copySource { sourcefile copytarget } {
 }
 
 # Check if user is in a group, print error if they aren't
+# Don't run this in a job or SGE's extra numeric groups cause groups errors.
 proc ::modulefunctions::isMember { group } {
-
-    set p1 [open "| /usr/bin/groups"]
-    set myGroups [read $p1]
-    if {[catch {close $p1} err]} {
-        puts stderr "groups command failed: $err"
-    }
-    if { [lsearch -exact $myGroups $group] != -1 } {
-        return true
-    } else {
-        puts stderr ""
-        puts stderr "You are not currently a member of the reserved application group"
-        puts stderr "for this module. Please email"
-        puts stderr ""
-        puts stderr "    rc-support@ucl.ac.uk"
-        puts stderr ""
-        puts stderr "requesting access to the software."
-        puts stderr ""
-        puts stderr "=================================="
-        puts stderr ""
-        return false
+    # if this is not a job
+    if { ! [::modulefunctions::isJob] } {
+        set p1 [open "| /usr/bin/groups"]
+        set myGroups [read $p1]
+        if {[catch {close $p1} err]} {
+            puts stderr "groups command failed: $err"
+        }
+        if { [lsearch -exact $myGroups $group] != -1 } {
+            return true
+        } else {
+            puts stderr ""
+            puts stderr "You are not currently a member of the reserved application group"
+            puts stderr "for this module. Please email"
+            puts stderr ""
+            puts stderr "    rc-support@ucl.ac.uk"
+            puts stderr ""
+            puts stderr "requesting access to the software."
+            puts stderr ""
+            puts stderr "=================================="
+            puts stderr ""
+            return false
+        }
     }
 }
 
@@ -134,5 +137,10 @@ proc ::modulefunctions::isModuleLoad { } {
 proc ::modulefunctions::isTMPDIR { } {
 
     return [ info exists ::env(TMPDIR) ]
+}
+
+# Check if this is a job (whether $NHOSTS exists)
+proc ::modulefunctions::isJob { } {
+    return [ info exists ::env(NHOSTS) ]
 }
 
