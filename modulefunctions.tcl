@@ -75,30 +75,38 @@ proc ::modulefunctions::copySource { sourcefile copytarget } {
 }
 
 # Check if user is in a group, print error if they aren't
-# Don't run this in a job or SGE's extra numeric groups cause groups errors.
+# Uses numeric group ids as SGE's extra numeric groups cause group name errors.
 proc ::modulefunctions::isMember { group } {
-    # if this is not a job
-    if { ! [::modulefunctions::isJob] } {
-        set p1 [open "| /usr/bin/groups"]
-        set myGroups [read $p1]
-        if {[catch {close $p1} err]} {
-            puts stderr "groups command failed: $err"
-        }
-        if { [lsearch -exact $myGroups $group] != -1 } {
-            return true
-        } else {
-            puts stderr ""
-            puts stderr "You are not currently a member of the reserved application group"
-            puts stderr "for this module. Please email"
-            puts stderr ""
-            puts stderr "    rc-support@ucl.ac.uk"
-            puts stderr ""
-            puts stderr "requesting access to the software."
-            puts stderr ""
-            puts stderr "=================================="
-            puts stderr ""
-            return false
-        }
+    # get the ids of the user's groups
+    set p1 [open "| /usr/bin/id --groups"]
+    set mygids [read $p1]
+    if {[catch {close $p1} err]} {
+        puts stderr "id command failed: $err"     
+    }
+    # get the id of the group we are checking
+    set p2 [open "| getent group $group"]
+    set appgroup [read $p2]
+    if {[catch {close $p2} err]} {
+        puts stderr "getent command failed: $err"
+    }
+    # getent output looks like 'group:*:nnnn:username,username'
+    # third item is the gid.
+    set appgid [exec awk -F: {{print $3}} << $appgroup]
+    # compare ids
+    if { [lsearch -exact $mygids $appgid] != -1 } {
+        return true
+    } else {
+        puts stderr ""
+        puts stderr "You are not currently a member of the reserved application group"
+        puts stderr "for this module. Please email"
+        puts stderr ""
+        puts stderr "    rc-support@ucl.ac.uk"
+        puts stderr ""
+        puts stderr "requesting access to the software."
+        puts stderr ""
+        puts stderr "=================================="
+        puts stderr ""
+        return false
     }
 }
 

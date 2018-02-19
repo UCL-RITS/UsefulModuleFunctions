@@ -37,7 +37,7 @@ Copies the source file or directory to user space. Informs the user of what is b
     
 * `isMember` 
     
-Check if the user is a member of the specified group. Gives an error if the groups command fails. If the user isn't in the group, says "You are not currently a member of the reserved application group for this module. Please email rc-support@ucl.ac.uk requesting access to the software."
+Check if the user is a member of the specified group. Gives an error if the id command fails. If the user isn't in the group, says "You are not currently a member of the reserved application group for this module. Please email rc-support@ucl.ac.uk requesting access to the software."
 
     modulefunctions::isMember $group
 
