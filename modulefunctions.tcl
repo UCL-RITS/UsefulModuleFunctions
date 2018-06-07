@@ -119,6 +119,8 @@ proc ::modulefunctions::getCluster { } {
         set name "grace"
     } elseif { [string match *thomas* $hostname] } {
         set name "thomas"
+    } elseif { [string match *myriad* $hostname] } {
+        set name "myriad"
     } elseif { [string match *aristotle* $hostname] } {
         set name "aristotle"
     } else {
