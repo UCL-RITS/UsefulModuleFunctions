@@ -13,7 +13,7 @@ package provide modulefunctions 1.0
 package require Tcl             8.4
 
 namespace eval ::modulefunctions {
-    namespace export createSymlink createDir copySource isMember getCluster isCluster isModuleLoad isTMPDIR
+    namespace export createSymlink createDir copySource isMember getCluster isCluster isModuleLoad isTMPDIR randomLabel randomLabelN
 }
 
 # Create a symlink in user space
@@ -153,4 +153,15 @@ proc ::modulefunctions::isTMPDIR { } {
 proc ::modulefunctions::isJob { } {
     return [ info exists ::env(NHOSTS) ]
 }
+
+# Gives a random hex label N(=8) characters long
+#  Good for temporary directories and files
+proc randomLabel {} {
+    return [randomLabelN 8]
+}
+
+proc randomLabelN {num} {
+    return [format %0${num}x [expr int((16**$num)*[::tcl::mathfunc::rand])]]
+}
+
 
