@@ -112,7 +112,7 @@ proc ::modulefunctions::isMember { group } {
 
 # Return which cluster this is.
 proc ::modulefunctions::getCluster { } {
-    set hostname [exec hostname -f]
+    set hostname [exec whereami]
     if { [string match *legion* $hostname] } {
         set name "legion"
     } elseif { [string match *grace* $hostname] } {
@@ -123,6 +123,8 @@ proc ::modulefunctions::getCluster { } {
         set name "myriad"
     } elseif { [string match *michael* $hostname] } {
         set name "michael"
+    } elseif { [string match *kathleen* $hostname] } {
+        set name "kathleen"
     } elseif { [string match *aristotle* $hostname] } {
         set name "aristotle"
     } else {
