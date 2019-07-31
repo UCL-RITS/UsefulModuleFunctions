@@ -112,10 +112,13 @@ proc ::modulefunctions::isMember { group } {
 
 # Return which cluster this is.
 proc ::modulefunctions::getCluster { } {
-#    set hostname [exec whereami]
-    set fp [open "/opt/sge/default/common/cluster_name" r]
-    set hostname [read $fp]
-    close $fp
+    if { [file exists "/opt/sge/default/common/cluster_name"] } {
+        set fp [open "/opt/sge/default/common/cluster_name" r]
+        set hostname [read $fp]
+        close $fp
+    } else {
+        set hostname [exec hostname -f]
+    }
     if { [string match *legion* $hostname] } {
         set name "legion"
     } elseif { [string match *grace* $hostname] } {
