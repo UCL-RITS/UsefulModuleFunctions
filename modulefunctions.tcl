@@ -96,19 +96,40 @@ proc ::modulefunctions::isMember { group } {
     if { [lsearch -exact $mygids $appgid] != -1 } {
         return true
     } else {
-        puts stderr ""
-        puts stderr "You are not currently a member of the reserved application group"
-        puts stderr "for this module. Please email"
-        puts stderr ""
-        puts stderr "    rc-support@ucl.ac.uk"
-        puts stderr ""
-        puts stderr "requesting access to the software."
-        puts stderr ""
-        puts stderr "=================================="
-        puts stderr ""
         return false
     }
 }
+
+# Check if user is in group, break if they aren't (this prevents modules loading)
+proc ::modulefunctions::mustBeMember { group } {
+    if { ! [ isMember $group ] } {
+        puts stderr ""
+        puts stderr " Access to the software this module refers to:"
+        puts stderr [format "    %s" [module-info name]]
+        puts stderr "  is granted by membership of the group:"
+        puts stderr [format "    %s" $group]
+        puts stderr ""
+        puts stderr " You are not currently a member of this group."
+        puts stderr ""
+        puts stderr " Please email: "
+        puts stderr ""
+        puts stderr "    rc-support@ucl.ac.uk"
+        puts stderr ""
+        puts stderr " to request access to the software."
+        puts stderr ""
+        puts stderr "=================================="
+        puts stderr ""
+        break
+    }
+}
+
+# Convenience
+proc ::modulefunctions::mustBeMemberToLoad { group } {
+    if { [isModuleLoad] } {
+        mustBeMember $group
+    }
+}
+
 
 # Return which cluster this is.
 proc ::modulefunctions::getCluster { } {
