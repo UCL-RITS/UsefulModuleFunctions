@@ -204,7 +204,6 @@ proc ::modulefunctions::getArch { } {
         regexp -line {^flags.*\s} [read $fp] cpuflags
         close $fp
     }
-    puts stderr "$cpuflags"
     # Right now we only have one flavour of avx512 node, so
     # check if any of our flags start with avx512. 
     # (avx512f avx512dq avx512cd avx512bw avx512vl avx512_vnni ...)
