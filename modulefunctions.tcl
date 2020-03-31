@@ -195,4 +195,37 @@ proc randomLabelN {num} {
     return [format %0${num}x [expr int((16**$num)*[::tcl::mathfunc::rand])]]
 }
 
+# Read /proc/cpuinfo and check if this is an arch we are interested in. 
+# Example use: loading avx512 build instead of earlier one.
+proc ::modulefunctions::getArch { } {
+    if { [file exists "/proc/cpuinfo"] } {
+        set fp [open "/proc/cpuinfo" r]
+        # read just the flags line and put the whole match in $cpuflags
+        regexp -line {^flags.*\s} [read $fp] cpuflags
+        close $fp
+    }
+    puts stderr "$cpuflags"
+    # Right now we only have one flavour of avx512 node, so
+    # check if any of our flags start with avx512. 
+    # (avx512f avx512dq avx512cd avx512bw avx512vl avx512_vnni ...)
+    # 'string first' finds the first occurrence of the substring and returns 
+    # the index of where it starts, or -1 if not present.
+    if { [string first " avx512" $cpuflags] != -1 } {
+        set thisarch "avx512"
+    } elseif { [string first " avx2 " $cpuflags] != -1 } {
+        set thisarch "avx2"
+    } elseif { [string first " sse2 " $cpuflags] != -1 } {
+        set thisarch "sse2"
+    } else {
+        set thisarch "unknown"
+    }
+    return $thisarch
+}
+
+# Check if this has a specific arch (not case-sensitive).
+# Returns true (1) if identical, false (0) if not.
+proc ::modulefunctions::hasArch { arch } {
+    set thisarch [::modulefunctions::getArch]
+    return [string equal -nocase $thisarch $arch]
+}
 
