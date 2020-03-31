@@ -79,3 +79,17 @@ Check if this is a job (whether $NHOSTS exists)
         # do stuff
     }
 
+* `getArch`
+
+Get the architecture of the current node, matching against ones we care about. (avx512, avx2, sse2 at time of writing, otherwise "unknown")
+
+    modulefunctions::getArch
+
+* `hasArch`
+
+Check if the "most important" arch of the current node matches the given string. Not case sensitive.
+
+    if [modulefunctions::hasArch "avx512"] {
+        # do stuff
+    }
+
