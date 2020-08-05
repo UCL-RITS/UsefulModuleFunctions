@@ -150,6 +150,8 @@ proc ::modulefunctions::getCluster { } {
         set name "myriad"
     } elseif { [string match *michael* $hostname] } {
         set name "michael"
+    } elseif { [string match *young* $hostname] } {
+        set name "young"
     } elseif { [string match *kathleen* $hostname] } {
         set name "kathleen"
     } elseif { [string match *aristotle* $hostname] } {
