@@ -187,6 +187,34 @@ proc ::modulefunctions::isJob { } {
     return [ info exists ::env(NHOSTS) ]
 }
 
+# These three functions are for programs which have their own
+#  variable to specify a temporary directory, to make it be
+#  TMPDIR within jobs but XDG_RUNTIME_DIR on login nodes.
+proc ::modulefunctions::tmpdirVar { varname } {
+    modulefunctions::tmpdirVarWithSubdir $varname ""
+}
+
+proc ::modulefunctions::tmpdirVarWithRandomSubdir { varname subdirStub } {
+    modulefunctions::tmpdirVarWithSubdir $varname /$subdirStub.[randomLabel]
+}
+
+proc ::modulefunctions::tmpdirVarWithSubdir { varname subdir } {
+    if {[string length $subdir] != 0} {
+        set slash /
+    } else {
+        set slash ""
+    }
+    if [modulefunctions::isTMPDIR] {
+        setenv $varname $::env(TMPDIR)$slash$suffix
+        # Acts like mkdir -p
+        file mkdir $varname
+    } else {
+        setenv $varname $::env(XDG_RUNTIME_DIR)$slash$suffix
+        # Acts like mkdir -p
+        file mkdir $varname
+    } 
+}
+
 # Gives a random hex label N(=8) characters long
 #  Good for temporary directories and files
 proc randomLabel {} {
