@@ -101,7 +101,7 @@ proc ::modulefunctions::isMember { group } {
 }
 
 # Check if user is in group, break if they aren't (this prevents modules loading)
-proc ::modulefunctions::mustBeMember { group } {
+proc ::modulefunctions::mustBeMember { group {failureNote ""} } {
     if { ! [ isMember $group ] } {
         puts stderr ""
         puts stderr " Access to the software this module refers to:"
@@ -116,6 +116,11 @@ proc ::modulefunctions::mustBeMember { group } {
         puts stderr "    rc-support@ucl.ac.uk"
         puts stderr ""
         puts stderr " to request access to the software."
+        if {[string length failureNote] != 0} {
+            puts stderr ""
+            puts stderr [format "    %s" $failureNote]
+            puts stderr ""
+        }
         puts stderr ""
         puts stderr "=================================="
         puts stderr ""
