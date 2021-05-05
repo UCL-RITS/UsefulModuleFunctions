@@ -135,7 +135,6 @@ proc ::modulefunctions::mustBeMemberToLoad { group } {
     }
 }
 
-
 # Return which cluster this is.
 proc ::modulefunctions::getCluster { } {
     if { [file exists "/opt/sge/default/common/cluster_name"] } {
@@ -172,6 +171,44 @@ proc ::modulefunctions::getCluster { } {
 proc ::modulefunctions::isCluster { name } {
   set cluster [::modulefunctions::getCluster]
   return [string equal -nocase $cluster $name]
+}
+
+# Check if this node has any disks.
+# Returns true (1) if yes, false (0) if no.
+proc ::modulefunctions::nodeHasDisks { } {
+    if { [catch { exec lsblk -l -n -o NAME } msg] } {
+        puts stderr "This module tried to work out whether this node has local storage, and failed."
+        puts stderr "The error message it received is below:\n\n$::errorInfo"
+        break
+    }
+    return [ expr { $msg != "" } ]
+}
+
+# Gets the amount of free space (in KB) available in the storage
+#  containing the temporary storage
+proc ::modulefunctions::getTmpdirSize { } {
+    # if no tmpdir then assume /tmp
+    if { [info exists ::env(TMPDIR)] } {
+        set targetDir $::env(TMPDIR)
+    } else {
+        set targetDir /tmp
+    }
+    return [ ::modulefunctions::getDirFreeSpace $targetDir ]
+}
+
+# Gets the amount of free space (in KB) available in the storage
+#  containing a directory.
+proc ::modulefunctions::getDirFreeSpace {targetDir} {
+    if { [catch { exec df --output=avail "$targetDir" } msg] } {
+        puts stderr "This module tried to work out how much space was in \n storage containing the path below, and failed."
+        puts stderr "Path: $targetDir"
+        puts stderr "The error message it received is below:\n\n$::errorInfo"
+        break
+    }
+
+    # delete the df header
+    set result [string trim $msg " Avail\n"]
+    return $result
 }
 
 # Check if user is loading module - only want to use many of the above
