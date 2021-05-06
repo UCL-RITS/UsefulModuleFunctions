@@ -186,7 +186,7 @@ proc ::modulefunctions::nodeHasDisks { } {
 
 # Gets the amount of free space (in KB) available in the storage
 #  containing the temporary storage
-proc ::modulefunctions::getTmpdirSize { } {
+proc ::modulefunctions::getTmpdirFreeSpace { } {
     # if no tmpdir then assume /tmp
     if { [info exists ::env(TMPDIR)] } {
         set targetDir $::env(TMPDIR)
