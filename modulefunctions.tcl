@@ -38,18 +38,27 @@ proc ::modulefunctions::createSymlink { newlink sourcefile } {
 
 # Create a directory in user space. mkdir creates any missing
 # dirs in the specified path. Retuns with no error if dir exists.
-# Retuns error if trying to overwrite a file with a dir.
+# Returns error if trying to overwrite a file with a dir.
 # Note: does not move existing user directory. 
 proc ::modulefunctions::createDir { path } {
+    if {[file exists $path]} {
+        if {[file isdirectory $path]} {
+            return true
+        } else {
+            puts stderr "Error: could not create directory as: $path"
+            puts stderr "       this target already exists but is not a directory"
+            return false
+        }
+    }
 
     if { [catch {file mkdir $path} err] } {
         puts stderr ""
-        puts stderr "failed to create $path"
-        puts stderr "    $err"
+        puts stderr "Error: could not create directory as: $path"
+        puts stderr "       $err"
         return false
     }
     puts stderr ""
-    puts stderr "$path is configured"
+    puts stderr "Created directory: $path"
     return true
 }
 
