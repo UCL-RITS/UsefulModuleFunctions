@@ -184,6 +184,12 @@ proc ::modulefunctions::nodeHasDisks { } {
     return [ expr { $msg != "" } ]
 }
 
+# Check if this node is a login node.
+# Returns true (1) if yes, false (0) if no.
+proc ::modulefunctions::nodeIsLoginNode { } {
+    return [string match login* [info hostname]]
+}
+
 # Gets the amount of free space (in KB) available in the storage
 #  containing the temporary storage
 proc ::modulefunctions::getTmpdirFreeSpace { } {
