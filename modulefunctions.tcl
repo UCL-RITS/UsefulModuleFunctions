@@ -151,6 +151,8 @@ proc ::modulefunctions::getCluster { } {
         set hostname [read $fp]
         close $fp
     } else {
+        # Can't use [info hostname] here because it doesn't
+        #  guarantee a FQDN (and we need the suffix)
         set hostname [exec hostname -f]
     }
     if { [string match *legion* $hostname] } {
