@@ -55,8 +55,36 @@ Check if the name of the current cluster matches the given string. Not case sens
         # do stuff
     }
 
-* `isModuleLoad` 
-    
+* `nodeHasDisks`
+
+Check if this node has any disks (strictly, connected mounted block devices).
+
+    if [modulefunctions::nodeHasDisks] {
+        # do stuff
+    }
+
+* `nodeIsLoginNode`
+
+Check if this node is a login node.
+
+    if [modulefunctions::nodeIsLoginNode] {
+        # do stuff
+    }
+
+* `getTmpdirFreeSpace`
+
+Get the amount of available space in KiB in the temporary storage (`TMPDIR`) filesystem. Defaults to `/tmp` if `TMPDIR` is not set.
+
+    modulefunctions::getTmpdirFreeSpace
+
+* `getDirFreeSpace`
+
+Get the amount of available space in KiB in the filesystem of an arbitrary directory.
+
+    modulefunctions::getDirFreeSpace $targetDir
+
+* `isModuleLoad`
+
 Check if the user is loading the module. Otherwise the function will be carried out on module unload as well.
 
     if [modulefunctions::isModuleLoad] {
