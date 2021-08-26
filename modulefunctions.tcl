@@ -204,8 +204,11 @@ proc ::modulefunctions::nodeIsLoginNode { } {
 # Gets the amount of free space (in KB) available in the storage
 #  containing the temporary storage
 proc ::modulefunctions::getTmpdirFreeSpace { } {
-    # if no tmpdir then assume /tmp
-    if { [info exists ::env(TMPDIR)] } {
+    # if no tmpdir or tmpdir set empty then assume /tmp
+    if { 
+        [info exists ::env(TMPDIR)] && 
+        ([string length $::env(TMPDIR)] != 0) 
+    } then {
         set targetDir $::env(TMPDIR)
     } else {
         set targetDir /tmp
