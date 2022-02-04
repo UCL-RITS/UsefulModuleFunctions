@@ -325,22 +325,28 @@ proc ::modulefunctions::hasArch { arch } {
 #  (Usually because the cluster was down when the software was installed.)
 #  This is intended to detect that and print an error or a reason.
 proc ::modulefunctions::checkInstalled { prefix_dir } {
-    if {[file isdirectory $prefix_dir]} {
-        return true
-    } else {
-        puts stderr "The software for this module does not appear to be installed."
-        puts stderr ""
-        if {[file exists $prefix_dir]} {
-            # So you can put a reason for it to not be installed in a file named the same as the prefix
-            puts stderr ""
-            puts stderr [read [open $prefix_dir r]
-            puts stderr ""
+    if {[module-info mode load]} {
+        if {[file isdirectory $prefix_dir]} {
+            return true
         } else {
-            puts stderr "This can be due to licensing, but may also be because of a temporary issue."
+            puts stderr "The software for this module does not appear to be installed."
             puts stderr ""
-            puts stderr "Please mail rc-support@ucl.ac.uk if you need this software on this system."
-            puts stderr ""
+            if {[file exists $prefix_dir]} {
+                # So you can put a reason for it to not be installed in a file named the same as the prefix
+                puts stderr ""
+                puts stderr [read [open $prefix_dir r]
+                puts stderr ""
+            } else {
+                puts stderr "This can be due to licensing, but may also be because of a temporary issue."
+                puts stderr ""
+                puts stderr "Please mail rc-support@ucl.ac.uk if you need this software on this system."
+                puts stderr ""
+            }
+            break
         }
-        break
+        return false
+    } else {
+        # This is just here to avoid problems unloading dud modules.
+        return true
     }
 } 
