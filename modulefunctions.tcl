@@ -13,7 +13,7 @@ package provide modulefunctions 1.0
 package require Tcl             8.4
 
 namespace eval ::modulefunctions {
-    namespace export createSymlink createDir copySource isMember mustBeMember mustBeMemberToLoad getCluster isCluster isModuleLoad isTMPDIR randomLabel randomLabelN tmpdirVar
+    namespace export createSymlink createDir copySource isMember mustBeMember mustBeMemberToLoad getCluster isCluster isModuleLoad isTMPDIR randomLabel randomLabelN tmpdirVar checkInstalled
 }
 
 # Create a symlink in user space
@@ -320,3 +320,33 @@ proc ::modulefunctions::hasArch { arch } {
     return [string equal -nocase $thisarch $arch]
 }
 
+# Sometimes we have problems where for one reason or another, a module exists
+#  but the software for it hasn't been installed on the cluster.
+#  (Usually because the cluster was down when the software was installed.)
+#  This is intended to detect that and print an error or a reason.
+proc ::modulefunctions::checkInstalled { prefix_dir } {
+    if {[module-info mode load]} {
+        if {[file isdirectory $prefix_dir]} {
+            return true
+        } else {
+            puts stderr "The software for this module does not appear to be installed."
+            puts stderr ""
+            if {[file exists $prefix_dir]} {
+                # So you can put a reason for it to not be installed in a file named the same as the prefix
+                puts stderr ""
+                puts stderr [read [open $prefix_dir r]
+                puts stderr ""
+            } else {
+                puts stderr "This can be due to licensing, but may also be because of a temporary issue."
+                puts stderr ""
+                puts stderr "Please mail rc-support@ucl.ac.uk if you need this software on this system."
+                puts stderr ""
+            }
+            break
+        }
+        return false
+    } else {
+        # This is just here to avoid problems unloading dud modules.
+        return true
+    }
+} 
