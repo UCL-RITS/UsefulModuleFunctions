@@ -13,7 +13,7 @@ package provide modulefunctions 1.0
 package require Tcl             8.4
 
 namespace eval ::modulefunctions {
-    namespace export createSymlink createDir copySource isMember mustBeMember mustBeMemberToLoad getCluster isCluster isModuleLoad isTMPDIR randomLabel randomLabelN tmpdirVar
+    namespace export createSymlink createDir copySource isMember mustBeMember mustBeMemberToLoad getCluster isCluster isCpusetLimited isModuleLoad isTMPDIR randomLabel randomLabelN tmpdirVar
 }
 
 # Create a symlink in user space
@@ -320,3 +320,24 @@ proc ::modulefunctions::hasArch { arch } {
     return [string equal -nocase $thisarch $arch]
 }
 
+# Check if the current cpuset does not include all cores
+# 2019 Intel MPI segfaults on certain cpusets if hwloc is used
+# so this is used to tweak settings if so
+proc ::modulefunctions::isCpusetLimited {} {
+    if {! [catch {open /proc/[pid]/status} f]} {
+        # read the cpuset line from status
+        regexp -line {^Cpus_allowed:\s+([0-9a-f,]+)$} [read $f] mask_line mask
+
+        # a cpuset is restricted if any of the hex digits are not f
+        set num_non_f_chars [regsub -all {[^f,]} $mask z _]
+
+        if { $num_non_f_chars > 0 } {
+            return 1
+        } else {
+            return 0
+        }
+    } else {
+        puts stderr {error: could not obtain cpuset mask, could not open status file for this process}
+        break
+    }
+}
